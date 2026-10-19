@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Kutubxona</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: #f0f4f8;
+      color: var(--gray-800);
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    header p {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+    }
+
+    /* Карточка формы */
+    .card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--gray-800);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    input, select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      background-color: var(--gray-50);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* Сообщения об ошибках */
+    .error-banner {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .error-banner.show {
+      display: block;
+    }
+
+    /* Кнопки */
+    .actions-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      padding: 11px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background-color 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 6px;
+    }
+
+    .btn-edit {
+      background: #e0e7ff;
+      color: var(--primary);
+    }
+
+    .btn-edit:hover {
+      background: #c7d2fe;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .btn-delete:hover {
+      background: #fecaca;
+    }
+
+    /* Список книг */
+    .books-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .books-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .badge-count {
+      background: var(--primary);
+      color: white;
+      font-size: 0.8rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 16px;
+    }
+
+    .book-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .book-content {
+      margin-bottom: 16px;
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .book-author {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: capitalize;
+    }
+
+    .badge-genre {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .status-unread {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-reading {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .book-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      border-top: 1px solid var(--gray-100);
+      padding-top: 12px;
+    }
+
+    /* Пустое состояние */
+    .empty-state {
+      background: #ffffff;
+      border-radius: var(--radius);
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--gray-600);
+      border: 1.5px dashed var(--gray-200);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      stroke: #94a3b8;
+    }
+
+    .empty-state p {
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .actions-row {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📚 Mini Kutubxona</h1>
+      <p>Shaxsiy kitoblaringiz ro'yxatini qulay boshqaring</p>
+    </header>
+
+    <!-- Форма добавления / редактирования книги -->
+    <div class="card">
+      <div class="card-title">
+        <span id="formTitle">Yangi kitob qo'shish</span>
+      </div>
+
+      <div id="errorBanner" class="error-banner" role="alert"></div>
+
+      <form id="bookForm" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="bookTitle">Kitob nomi *</label>
+            <input 
+              type="text" 
+              id="bookTitle" 
+              placeholder="Masalan: O'tkan kunlar" 
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="bookAuthor">Muallif *</label>
+            <input 
+              type="text" 
+              id="bookAuthor" 
+              placeholder="Masalan: Abdulla Qodiriy" 
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="bookGenre">Janr</label>
+            <select id="bookGenre">
+              <option value="Badiiy">Badiiy</option>
+              <option value="Ilmiy">Ilmiy</option>
+              <option value="IT">IT</option>
+              <option value="Boshqa">Boshqa</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bookStatus">O'qish holati</label>
+            <select id="bookStatus">
+              <option value="O’qilmagan">O’qilmagan</option>
+              <option value="O’qilyapti">O’qilyapti</option>
+              <option value="Tugatilgan">Tugatilgan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button type="submit" id="submitBtn" class="btn btn-primary">Qo’shish</button>
+          <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Bekor qilish</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Список книг -->
+    <section>
+      <div class="books-header">
+        <h2>Kitoblar ro'yxati</h2>
+        <span id="bookCount" class="badge-count">0</span>
+      </div>
+
+      <div id="booksContainer">
+        <!-- Книги или пустое состояние отображаются здесь через JS -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // --- КОНСТАНТЫ И СОСТОЯНИЕ ---
+    const STORAGE_KEY = 'mini_kutubxona_books';
+    let books = [];
+    let editingBookId = null; // null — режим добавления, строка id — режим редактирования
+
+    // --- DOM ЭЛЕМЕНТЫ ---
+    const bookForm = document.getElementById('bookForm');
+    const bookTitleInput = document.getElementById('bookTitle');
+    const bookAuthorInput = document.getElementById('bookAuthor');
+    const bookGenreSelect = document.getElementById('bookGenre');
+    const bookStatusSelect = document.getElementById('bookStatus');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const formTitle = document.getElementById('formTitle');
+    const errorBanner = document.getElementById('errorBanner');
+    const booksContainer = document.getElementById('booksContainer');
+    const bookCountBadge = document.getElementById('bookCount');
+
+    // --- РАБОТА С LOCALSTORAGE ---
+    /**
+     * Считывает список книг из localStorage
+     * @returns {Array} Массив объектов книг
+     */
+    function getBooksFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.error("localStorage ma'lumotlarini o'qishda xatolik:", e);
+        return [];
+      }
+    }
+
+    /**
+     * Сохраняет текущий массив книг в localStorage
+     * @param {Array} dataList
+     */
+    function saveBooksToStorage(dataList) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataList));
+      } catch (e) {
+        console.error("localStorage'ga yozishda xatolik:", e);
+        showError("Ma'lumotlarni saqlashda xatolik yuz berdi!");
+      }
+    }
+
+    // --- ОБРАБОТКА ОШИБОК И ФОРМЫ ---
+    function showError(message) {
+      errorBanner.textContent = message;
+      errorBanner.classList.add('show');
+    }
+
+    function clearError() {
+      errorBanner.textContent = '';
+      errorBanner.classList.remove('show');
+    }
+
+    function resetFormState() {
+      bookForm.reset();
+      editingBookId = null;
+      submitBtn.textContent = 'Qo’shish';
+      formTitle.textContent = "Yangi kitob qo'shish";
+      cancelBtn.style.display = 'none';
+      clearError();
+    }
+
+    // --- CRUD ОПЕРАЦИИ ---
+
+    /**
+     * CREATE & UPDATE: Обработка отправки формы
+     */
+    bookForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearError();
+
+      const title = bookTitleInput.value.trim();
+      const author = bookAuthorInput.value.trim();
+      const genre = bookGenreSelect.value;
+      const status = bookStatusSelect.value;
+
+      // Валидация: пустые строки и одни пробелы не принимаются
+      if (!title || !author) {
+        showError("Iltimos, kitob nomi va muallifini to'liq kiriting (bo'sh qoldirish mumkin emas)!");
+        return;
+      }
+
+      if (editingBookId) {
+        // UPDATE (Редактирование существующей книги)
+        const targetIndex = books.findIndex(b => b.id === editingBookId);
+        if (targetIndex !== -1) {
+          books[targetIndex] = {
+            ...books[targetIndex],
+            title: title,
+            author: author,
+            genre: genre,
+            status: status
+          };
+          saveBooksToStorage(books);
+          renderBooks();
+          resetFormState();
+        }
+      } else {
+        // CREATE (Добавление новой книги)
+        const newBook = {
+          id: (typeof crypto !== 'undefined' && crypto.randomUUID) 
+                ? crypto.randomUUID() 
+                : 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          title: title,
+          author: author,
+          genre: genre,
+          status: status,
+          createdAt: Date.now()
+        };
+
+        books.unshift(newBook); // Добавляем новую книгу в начало списка
+        saveBooksToStorage(books);
+        renderBooks();
+        resetFormState();
+      }
+    });
+
+    /**
+     * UPDATE: Заполнение формы для редактирования книги
+     * @param {string} id
+     */
+    function startEdit(id) {
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+
+      editingBookId = book.id;
+      bookTitleInput.value = book.title;
+      bookAuthorInput.value = book.author;
+      bookGenreSelect.value = book.genre;
+      bookStatusSelect.value = book.status;
+
+      formTitle.textContent = 'Kitob maʼlumotlarini tahrirlash';
+      submitBtn.textContent = 'Saqlash';
+      cancelBtn.style.display = 'inline-flex';
+      clearError();
+
+      // Плавный скролл к форме на мобильных устройствах
+      bookForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      bookTitleInput.focus();
+    }
+
+    /**
+     * UPDATE: Отмена редактирования
+     */
+    cancelBtn.addEventListener('click', function () {
+      resetFormState();
+    });
+
+    /**
+     * DELETE: Удаление книги с подтверждением
+     * @param {string} id
+     */
+    function deleteBook(id) {
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+
+      const confirmed = window.confirm(`"${book.title}" kitobini ro'yxatdan o'chirishni xohlaysizmi?`);
+      if (confirmed) {
+        books = books.filter(b => b.id !== id);
+        saveBooksToStorage(books);
+        
+        // Если удаляемая книга была в процессе редактирования, сбрасываем форму
+        if (editingBookId === id) {
+          resetFormState();
+        }
+        
+        renderBooks();
+      }
+    }
+
+    // --- ОТРИСОВКА ИНТЕРФЕЙСА (READ & XSS ЗАЩИТА) ---
+    /**
+     * Безопасная отрисовка списка книг с использованием DOM API (без опасного innerHTML)
+     */
+    function renderBooks() {
+      bookCountBadge.textContent = books.length;
+      booksContainer.innerHTML = ''; // Очищаем контейнер
+
+      // Состояние: список пуст
+      if (books.length === 0) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-state';
+
+        emptyDiv.innerHTML = `
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+          </svg>
+          <p>Hozircha kitob qo’shilmagan</p>
+        `;
+        booksContainer.appendChild(emptyDiv);
+        return;
+      }
+
+      // Карточки с книгами
+      const grid = document.createElement('div');
+      grid.className = 'books-grid';
+
+      books.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'book-card';
+
+        const content = document.createElement('div');
+        content.className = 'book-content';
+
+        // Название (Защита от XSS через textContent)
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'book-title';
+        titleEl.textContent = book.title;
+
+        // Автор (Защита от XSS через textContent)
+        const authorEl = document.createElement('p');
+        authorEl.className = 'book-author';
+        authorEl.textContent = book.author;
+
+        // Бейджи жанра и статуса
+        const badgesEl = document.createElement('div');
+        badgesEl.className = 'badges';
+
+        const genreBadge = document.createElement('span');
+        genreBadge.className = 'badge badge-genre';
+        genreBadge.textContent = book.genre;
+
+        const statusBadge = document.createElement('span');
+        statusBadge.className = 'badge';
+        if (book.status === 'Tugatilgan') {
+          statusBadge.classList.add('status-completed');
+        } else if (book.status === 'O’qilyapti') {
+          statusBadge.classList.add('status-reading');
+        } else {
+          statusBadge.classList.add('status-unread');
+        }
+        statusBadge.textContent = book.status;
+
+        badgesEl.appendChild(genreBadge);
+        badgesEl.appendChild(statusBadge);
+
+        content.appendChild(titleEl);
+        content.appendChild(authorEl);
+        content.appendChild(badgesEl);
+
+        // Кнопки управления (Tahrirlash / O'chirish)
+        const actionsEl = document.createElement('div');
+        actionsEl.className = 'book-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'btn btn-sm btn-edit';
+        editBtn.textContent = 'Tahrirlash';
+        editBtn.onclick = () => startEdit(book.id);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'btn btn-sm btn-delete';
+        deleteBtn.textContent = 'O’chirish';
+        deleteBtn.onclick = () => deleteBook(book.id);
+
+        actionsEl.appendChild(editBtn);
+        actionsEl.appendChild(deleteBtn);
+
+        card.appendChild(content);
+        card.appendChild(actionsEl);
+
+        grid.appendChild(card);
+      });
+
+      booksContainer.appendChild(grid);
+    }
+
+    // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
+    document.addEventListener('DOMContentLoaded', () => {
+      books = getBooksFromStorage();
+      renderBooks();
+    });
+  </script>
+</body>
+</html>
